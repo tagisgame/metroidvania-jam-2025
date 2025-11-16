@@ -11,5 +11,14 @@ config_version=5
 [application]
 
 config/name="metroidvania-jam"
+run/main_scene="uid://b3lqgt7u4lvcp"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GUIDE="*res://addons/guide/guide.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_state_charts/plugin.cfg", "res://addons/guide/plugin.cfg")
