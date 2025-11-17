@@ -12,5 +12,5 @@ func _ready():
 	GUIDE.enable_mapping_context(mapping_context)
 
 func _physics_process(delta:float) -> void:
-	
-	position += move.value_axis_2d.normalized() * SPEED * delta
+	velocity = move.value_axis_2d.normalized() * SPEED
+	move_and_slide()
