@@ -48,5 +48,3 @@ func _update_instructions():
 	
 	parse_bbcode(instructions_text % replacements)
 	
-
-
