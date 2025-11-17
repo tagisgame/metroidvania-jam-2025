@@ -5,16 +5,19 @@
 [ext_resource type="PackedScene" uid="uid://215re2lxj5ca" path="res://entities/modules/movement_module/movement_module.tscn" id="3_6en24"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6en24"]
+radius = 22.0
+height = 96.0
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_wuh0g")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(81, 47)
+position = Vector2(24, -48)
 shape = SubResource("CapsuleShape2D_6en24")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(81, 47)
+position = Vector2(24, -48.28)
+scale = Vector2(2.9999998, 5.965)
 texture = ExtResource("2_psj07")
 hframes = 4
 

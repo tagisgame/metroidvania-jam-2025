@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://x74mnwgr08a7" path="res://addons/guide/triggers/guide_trigger.gd" id="8_j1rs2"]
 [ext_resource type="Resource" uid="uid://bqjwstn4kfw5b" path="res://entities/player_character/mapping_context/start_jump.tres" id="8_tkeot"]
 [ext_resource type="Script" uid="uid://dsa1dnifd6w32" path="res://addons/guide/guide_mapping_context.gd" id="9_45m80"]
-[ext_resource type="Script" uid="uid://b4cdrn4paoj3i" path="res://addons/guide/triggers/guide_trigger_down.gd" id="9_ki0k4"]
+[ext_resource type="Script" uid="uid://b52rqq28tuqpg" path="res://addons/guide/triggers/guide_trigger_pressed.gd" id="9_tkeot"]
 [ext_resource type="Resource" uid="uid://bsk6tuqqy74vd" path="res://entities/player_character/mapping_context/stop_jump.tres" id="10_6drng"]
 [ext_resource type="Script" uid="uid://biiggjw6tv4uq" path="res://addons/guide/triggers/guide_trigger_released.gd" id="11_egnuy"]
 
@@ -43,13 +43,13 @@ input_mappings = Array[ExtResource("3_ki0k4")]([SubResource("Resource_et02b"), S
 script = ExtResource("4_tkeot")
 key = 87
 
-[sub_resource type="Resource" id="Resource_tkeot"]
-script = ExtResource("9_ki0k4")
+[sub_resource type="Resource" id="Resource_82uma"]
+script = ExtResource("9_tkeot")
 
 [sub_resource type="Resource" id="Resource_8wrmh"]
 script = ExtResource("3_ki0k4")
 input = SubResource("Resource_j1rs2")
-triggers = Array[ExtResource("8_j1rs2")]([SubResource("Resource_tkeot")])
+triggers = Array[ExtResource("8_j1rs2")]([SubResource("Resource_82uma")])
 
 [sub_resource type="Resource" id="Resource_mqnec"]
 script = ExtResource("1_esr64")

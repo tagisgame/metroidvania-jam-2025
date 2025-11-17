@@ -31,7 +31,7 @@ metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
 [node name="ToJump" type="Node" parent="StateChart/Root/is_on_ground"]
 script = ExtResource("5_wk8nw")
-to = NodePath("../../is_airborne/is_jumping")
+to = NodePath("../../is_airborne/moves_upwards")
 event = &"jump"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
@@ -41,35 +41,29 @@ script = ExtResource("3_u5any")
 initial_state = NodePath("has_coyote_time")
 metadata/_custom_type_script = "uid://jk2jm1g6q853"
 
-[node name="is_jumping" type="Node" parent="StateChart/Root/is_airborne"]
+[node name="moves_upwards" type="Node" parent="StateChart/Root/is_airborne"]
 script = ExtResource("4_m33x5")
 metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 
-[node name="ToFallDelay" type="Node" parent="StateChart/Root/is_airborne/is_jumping"]
+[node name="ToFall" type="Node" parent="StateChart/Root/is_airborne/moves_upwards"]
 script = ExtResource("5_wk8nw")
-to = NodePath("../../is_falling")
-delay_in_seconds = "0.2"
-metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
-
-[node name="ToFallRelease" type="Node" parent="StateChart/Root/is_airborne/is_jumping"]
-script = ExtResource("5_wk8nw")
-to = NodePath("../../is_falling")
+to = NodePath("../../is_in_air")
 event = &"stop_jump"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
-[node name="is_falling" type="Node" parent="StateChart/Root/is_airborne"]
+[node name="is_in_air" type="Node" parent="StateChart/Root/is_airborne"]
 script = ExtResource("4_m33x5")
 metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 
-[node name="ToGround" type="Node" parent="StateChart/Root/is_airborne/is_falling"]
+[node name="ToGround" type="Node" parent="StateChart/Root/is_airborne/is_in_air"]
 script = ExtResource("5_wk8nw")
 to = NodePath("../../../is_on_ground")
 event = &"touchdown"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
-[node name="ToBufferJump" type="Node" parent="StateChart/Root/is_airborne/is_falling"]
+[node name="ToBufferJump" type="Node" parent="StateChart/Root/is_airborne/is_in_air"]
 script = ExtResource("5_wk8nw")
 to = NodePath("../../is_falling_buffered")
 event = &"jump"
@@ -82,13 +76,13 @@ metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 
 [node name="ToFall" type="Node" parent="StateChart/Root/is_airborne/has_coyote_time"]
 script = ExtResource("5_wk8nw")
-to = NodePath("../../is_falling")
-delay_in_seconds = "0.4"
+to = NodePath("../../is_in_air")
+delay_in_seconds = "0.1"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
 [node name="ToJump" type="Node" parent="StateChart/Root/is_airborne/has_coyote_time"]
 script = ExtResource("5_wk8nw")
-to = NodePath("../../is_jumping")
+to = NodePath("../../moves_upwards")
 event = &"jump"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
@@ -99,18 +93,18 @@ metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 
 [node name="ToJump" type="Node" parent="StateChart/Root/is_airborne/is_falling_buffered"]
 script = ExtResource("5_wk8nw")
-to = NodePath("../../is_jumping")
+to = NodePath("../../moves_upwards")
 event = &"touchdown"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
 [node name="ToFallDelay" type="Node" parent="StateChart/Root/is_airborne/is_falling_buffered"]
 script = ExtResource("5_wk8nw")
-to = NodePath("../../is_falling")
+to = NodePath("../../is_in_air")
 delay_in_seconds = "0.2"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
-[connection signal="state_entered" from="StateChart/Root/is_airborne/is_jumping" to="." method="_on_is_jumping_state_entered"]
-[connection signal="state_physics_processing" from="StateChart/Root/is_airborne/is_jumping" to="." method="_on_is_jumping_state_physics_processing"]
-[connection signal="state_physics_processing" from="StateChart/Root/is_airborne/is_falling" to="." method="_on_is_falling_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/Root/is_airborne/moves_upwards" to="." method="_on_is_jumping_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/Root/is_airborne/moves_upwards" to="." method="_on_is_jumping_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/is_airborne/is_in_air" to="." method="_on_is_falling_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/is_airborne/is_falling_buffered" to="." method="_on_is_falling_state_physics_processing"]
