@@ -1,0 +1,116 @@
+[gd_scene load_steps=6 format=3 uid="uid://215re2lxj5ca"]
+
+[ext_resource type="Script" uid="uid://cqfc88va3exmp" path="res://entities/modules/movement_module/movement_module.gd" id="1_w7btf"]
+[ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="2_5ma2x"]
+[ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="3_u5any"]
+[ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="4_m33x5"]
+[ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="5_wk8nw"]
+
+[node name="MovementModule" type="Node"]
+script = ExtResource("1_w7btf")
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("2_5ma2x")
+metadata/_custom_type_script = "uid://couw105c3bde4"
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("3_u5any")
+initial_state = NodePath("is_airborne")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="is_on_ground" type="Node" parent="StateChart/Root"]
+script = ExtResource("4_m33x5")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToAirborne" type="Node" parent="StateChart/Root/is_on_ground"]
+script = ExtResource("5_wk8nw")
+to = NodePath("../../is_airborne")
+event = &"airborne"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToJump" type="Node" parent="StateChart/Root/is_on_ground"]
+script = ExtResource("5_wk8nw")
+to = NodePath("../../is_airborne/is_jumping")
+event = &"jump"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="is_airborne" type="Node" parent="StateChart/Root"]
+script = ExtResource("3_u5any")
+initial_state = NodePath("has_coyote_time")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="is_jumping" type="Node" parent="StateChart/Root/is_airborne"]
+script = ExtResource("4_m33x5")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToFallDelay" type="Node" parent="StateChart/Root/is_airborne/is_jumping"]
+script = ExtResource("5_wk8nw")
+to = NodePath("../../is_falling")
+delay_in_seconds = "0.2"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToFallRelease" type="Node" parent="StateChart/Root/is_airborne/is_jumping"]
+script = ExtResource("5_wk8nw")
+to = NodePath("../../is_falling")
+event = &"stop_jump"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="is_falling" type="Node" parent="StateChart/Root/is_airborne"]
+script = ExtResource("4_m33x5")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToGround" type="Node" parent="StateChart/Root/is_airborne/is_falling"]
+script = ExtResource("5_wk8nw")
+to = NodePath("../../../is_on_ground")
+event = &"touchdown"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToBufferJump" type="Node" parent="StateChart/Root/is_airborne/is_falling"]
+script = ExtResource("5_wk8nw")
+to = NodePath("../../is_falling_buffered")
+event = &"jump"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="has_coyote_time" type="Node" parent="StateChart/Root/is_airborne"]
+script = ExtResource("4_m33x5")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToFall" type="Node" parent="StateChart/Root/is_airborne/has_coyote_time"]
+script = ExtResource("5_wk8nw")
+to = NodePath("../../is_falling")
+delay_in_seconds = "0.1"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToJump" type="Node" parent="StateChart/Root/is_airborne/has_coyote_time"]
+script = ExtResource("5_wk8nw")
+to = NodePath("../../is_jumping")
+event = &"jump"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="is_falling_buffered" type="Node" parent="StateChart/Root/is_airborne"]
+script = ExtResource("4_m33x5")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToJump" type="Node" parent="StateChart/Root/is_airborne/is_falling_buffered"]
+script = ExtResource("5_wk8nw")
+to = NodePath("../../is_jumping")
+event = &"touchdown"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToFallDelay" type="Node" parent="StateChart/Root/is_airborne/is_falling_buffered"]
+script = ExtResource("5_wk8nw")
+to = NodePath("../../is_falling")
+delay_in_seconds = "0.2"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[connection signal="state_entered" from="StateChart/Root/is_airborne/is_jumping" to="." method="_on_is_jumping_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/Root/is_airborne/is_jumping" to="." method="_on_is_jumping_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/is_airborne/is_falling" to="." method="_on_is_falling_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/is_airborne/is_falling_buffered" to="." method="_on_is_falling_state_physics_processing"]
