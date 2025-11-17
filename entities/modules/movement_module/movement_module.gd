@@ -33,7 +33,7 @@ func apply_horizontal_acceleration(axis_vector_val: float, delta: float) -> void
 	parent_entity.velocity.x = move_toward(parent_entity.velocity.x, target_velocity, velocity_delta * delta)
 
 func start_jump() -> void:
-	jump_state.send_event("jump")
+		jump_state.send_event("jump")
 
 func stop_jump() -> void:
 	jump_state.send_event("stop_jump")
