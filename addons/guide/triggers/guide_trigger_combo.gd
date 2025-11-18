@@ -132,4 +132,3 @@ func _editor_name() -> String:
 
 func _editor_description() -> String:
 	return "Fires, when the input exceeds the actuation threshold."
-

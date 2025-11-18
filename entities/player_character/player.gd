@@ -8,6 +8,9 @@ extends CharacterBody2D
 	
 @export var stop_jump: GUIDEAction =\
 	load("res://entities/player_character/mapping_context/stop_jump.tres")
+	
+@export var start_dash: GUIDEAction =\
+	load("res://entities/player_character/mapping_context/start_dash.tres")
 
 @export var mapping_context:GUIDEMappingContext =\
 	 load("res://entities/player_character/mapping_context/mapping_context.tres")
@@ -24,6 +27,9 @@ func _process(_delta:float) -> void:
 	
 	if (stop_jump.is_triggered()):
 		$MovementModule.stop_jump()
+		
+	if (start_dash.is_triggered()):
+		$MovementModule.start_dash()
 
 func _physics_process(delta: float) -> void:
 	$MovementModule.apply_horizontal_acceleration(move.value_axis_2d.normalized().x, delta)
