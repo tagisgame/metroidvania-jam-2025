@@ -11,13 +11,15 @@ config_version=5
 [application]
 
 config/name="metroidvania-jam"
-run/main_scene="uid://b3lqgt7u4lvcp"
+run/main_scene="uid://3vqx8j64hu67"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 GUIDE="*res://addons/guide/guide.gd"
+MovementConsts="*res://entities/consts/movement_consts.gd"
+PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
 
 [display]
 
@@ -28,4 +30,8 @@ window/stretch/scale_mode="integer"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot_state_charts/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/licenses/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_state_charts/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/phantom_camera/plugin.cfg")
+
+[physics]
+
+common/physics_interpolation=true
