@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GUIDE="*res://addons/guide/guide.gd"
 MovementConsts="*res://entities/consts/movement_consts.gd"
+PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
 
 [display]
 
@@ -29,4 +30,8 @@ window/stretch/scale_mode="integer"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot_state_charts/plugin.cfg", "res://addons/guide/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_state_charts/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/phantom_camera/plugin.cfg")
+
+[physics]
+
+common/physics_interpolation=true
