@@ -47,22 +47,36 @@ metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 script = ExtResource("4_m33x5")
 metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 
+[node name="ToDash" type="Node" parent="StateChart/Root/is_dashing"]
+script = ExtResource("5_wk8nw")
+to = NodePath("..")
+event = &"dash"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
 [node name="ToFall" type="Node" parent="StateChart/Root/is_dashing"]
 script = ExtResource("5_wk8nw")
 to = NodePath("../../is_airborne/is_in_air")
-delay_in_seconds = "0.0"
+delay_in_seconds = "0.12"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
 [node name="ToGrounded" type="Node" parent="StateChart/Root/is_dashing"]
 script = ExtResource("5_wk8nw")
 to = NodePath("../../is_on_ground")
-delay_in_seconds = "0.0"
+delay_in_seconds = "0.12"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
 [node name="is_airborne" type="Node" parent="StateChart/Root"]
 script = ExtResource("3_u5any")
 initial_state = NodePath("has_coyote_time")
 metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="ToDash" type="Node" parent="StateChart/Root/is_airborne"]
+script = ExtResource("5_wk8nw")
+to = NodePath("../../is_dashing")
+event = &"dash"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
 [node name="moves_upwards" type="Node" parent="StateChart/Root/is_airborne"]
 script = ExtResource("4_m33x5")
@@ -72,13 +86,6 @@ metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 script = ExtResource("5_wk8nw")
 to = NodePath("../../is_in_air")
 event = &"stop_jump"
-delay_in_seconds = "0.0"
-metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
-
-[node name="ToDash" type="Node" parent="StateChart/Root/is_airborne/moves_upwards"]
-script = ExtResource("5_wk8nw")
-to = NodePath("../../../is_dashing")
-event = &"dash"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
@@ -100,13 +107,6 @@ event = &"jump"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
-[node name="ToDash" type="Node" parent="StateChart/Root/is_airborne/is_in_air"]
-script = ExtResource("5_wk8nw")
-to = NodePath("../../../is_dashing")
-event = &"dash"
-delay_in_seconds = "0.0"
-metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
-
 [node name="has_coyote_time" type="Node" parent="StateChart/Root/is_airborne"]
 script = ExtResource("4_m33x5")
 metadata/_custom_type_script = "uid://cytafq8i1y8qm"
@@ -121,13 +121,6 @@ metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 script = ExtResource("5_wk8nw")
 to = NodePath("../../moves_upwards")
 event = &"jump"
-delay_in_seconds = "0.0"
-metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
-
-[node name="ToDash" type="Node" parent="StateChart/Root/is_airborne/has_coyote_time"]
-script = ExtResource("5_wk8nw")
-to = NodePath("../../../is_dashing")
-event = &"dash"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
@@ -148,19 +141,9 @@ to = NodePath("../../is_in_air")
 delay_in_seconds = "0.2"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
-[node name="ToDash" type="Node" parent="StateChart/Root/is_airborne/is_falling_buffered"]
-script = ExtResource("5_wk8nw")
-to = NodePath("../../../is_dashing")
-event = &"dash"
-delay_in_seconds = "0.0"
-metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
-
-[node name="DashTimer" type="Timer" parent="."]
-wait_time = 0.12
-
 [connection signal="state_entered" from="StateChart/Root/is_dashing" to="." method="_on_is_dashing_state_entered"]
+[connection signal="state_exited" from="StateChart/Root/is_dashing" to="." method="_on_is_dashing_state_exited"]
 [connection signal="state_entered" from="StateChart/Root/is_airborne/moves_upwards" to="." method="_on_is_jumping_state_entered"]
 [connection signal="state_physics_processing" from="StateChart/Root/is_airborne/moves_upwards" to="." method="_on_is_jumping_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/is_airborne/is_in_air" to="." method="_on_is_falling_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/is_airborne/is_falling_buffered" to="." method="_on_is_falling_state_physics_processing"]
-[connection signal="timeout" from="DashTimer" to="." method="_on_dash_timer_timeout"]

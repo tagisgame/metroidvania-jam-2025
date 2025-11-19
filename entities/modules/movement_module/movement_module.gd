@@ -1,12 +1,12 @@
 extends Node
+## Handles movement, jumping and dash physics.
 
 @export var parent_entity: CharacterBody2D = get_parent()
 
 @export_category("Horizontal movement")
 @export var hor_acceleration: float = MovementConsts.DEFAULT_HORIZONTAL_ACCELERATION
 @export var max_hor_velocity: float = MovementConsts.DEFAULT_MAX_HORIZONTAL_VELOCITY
-@export var hor_deceleration: float = MovementConsts.DEFAULT_FRICTION_ACCELERATION
-# @export var dash_speed_bonus: float = 250 
+@export var hor_deceleration: float = MovementConsts.DEFAULT_FRICTION_ACCELERATION 
 @export var dash_target_velocity: float = 1200
 
 @export_category("Vertical movement")
@@ -18,10 +18,10 @@ extends Node
 @export var coyote_time_ms: int = MovementConsts.DEFAULT_COYOTE_TIME_MS
 @export var jump_buffer_time_ms: int = MovementConsts.DEFAULT_JUMPING_BUFFER_TIME_MS
 
+
 var _gravity_for_max_jump: float
 var _gravity_for_min_jump: float
 var _jump_initial_velocity: float
-# var _dash_boost: float = 5
 var _is_dashing: bool = false
 
 #var _gravity_for_max_jump: float =	\
@@ -100,16 +100,12 @@ func _calc_jumping_curve() -> void:
 
 
 func _on_is_dashing_state_entered():
-	var axis_x = parent_entity.move.value_axis_2d.normalized().x
-	
 	_is_dashing = true
-	
-	$DashTimer.start()
+	var axis_x: float = parent_entity.move.value_axis_2d.normalized().x
 	
 	parent_entity.velocity.x = axis_x * dash_target_velocity
 	
-func _on_dash_timer_timeout():
-	$DashTimer.stop()
-	parent_entity.velocity.x = 0
-	_is_dashing = false
 	
+func _on_is_dashing_state_exited():
+	_is_dashing = false
+	parent_entity.restore_dash()
