@@ -1,5 +1,9 @@
 extends Node
 
+signal jump_started
+signal falling_started
+signal touchdown
+
 @export var parent_entity: CharacterBody2D = get_parent()
 
 @export_category("Horizontal movement")
@@ -65,6 +69,7 @@ func apply_horizontal_acceleration(axis_vector_val: float, delta: float) -> void
 	parent_entity.velocity.x = move_toward(parent_entity.velocity.x, target_velocity, velocity_delta * delta)
 
 func start_jump() -> void:
+	jump_started.emit()
 	jump_state.send_event("jump")
 
 func stop_jump() -> void:
@@ -99,3 +104,11 @@ func _calc_jumping_curve() -> void:
 	_gravity_for_max_jump = (-2 * max_h * vx_sqrd) / max_xh_sqrd
 
 	_gravity_for_min_jump = (-2 * min_h * vx_sqrd) / min_xh_sqrd
+
+
+func _on_is_in_air_state_entered() -> void:
+	falling_started.emit()
+
+
+func _on_is_on_ground_state_entered() -> void:
+	touchdown.emit()

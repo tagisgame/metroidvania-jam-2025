@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://yt6h0ni2o8r5"]
+[gd_scene load_steps=14 format=3 uid="uid://yt6h0ni2o8r5"]
 
 [ext_resource type="Script" uid="uid://bkfnrkulk5wgt" path="res://entities/modules/animation_controller/animation_controller.gd" id="1_ool0l"]
 [ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="2_n1lsr"]
@@ -32,19 +32,9 @@ script = ExtResource("6_0wh4h")
 expression = "speed < 2"
 metadata/_custom_type_script = "uid://le5w1cm0ul8p"
 
-[sub_resource type="Resource" id="Resource_b8r05"]
-script = ExtResource("6_0wh4h")
-expression = "speed == 1"
-metadata/_custom_type_script = "uid://le5w1cm0ul8p"
-
-[sub_resource type="Resource" id="Resource_t7fbg"]
-script = ExtResource("6_0wh4h")
-expression = "speed == 2"
-metadata/_custom_type_script = "uid://le5w1cm0ul8p"
-
 [sub_resource type="Resource" id="Resource_er6sr"]
 script = ExtResource("6_0wh4h")
-expression = "speed == 0"
+expression = "speed == 1"
 metadata/_custom_type_script = "uid://le5w1cm0ul8p"
 
 [sub_resource type="Resource" id="Resource_x65pl"]
@@ -211,21 +201,21 @@ metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 [node name="ToWalking" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down"]
 script = ExtResource("5_x65pl")
 to = NodePath("../../walking")
-guard = SubResource("Resource_b8r05")
-delay_in_seconds = "0.1"
-metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
-
-[node name="ToRunning" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down"]
-script = ExtResource("5_x65pl")
-to = NodePath("../../running")
-guard = SubResource("Resource_t7fbg")
-delay_in_seconds = "0.1"
+guard = SubResource("Resource_er6sr")
+delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
 [node name="ToStationary" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down"]
 script = ExtResource("5_x65pl")
 to = NodePath("../../../stationary")
-guard = SubResource("Resource_er6sr")
+event = &"anim_finished"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToJumpingSideways" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../../airborne/jumping_sideways")
+event = &"jump"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
@@ -249,53 +239,191 @@ guard = SubResource("Resource_x65pl")
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
+[node name="ToJumpingUpwards" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/stationary"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../../airborne/jumping_upwards")
+event = &"jump"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="landing" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("sideways")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="sideways" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/landing"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("right")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="left" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/landing/sideways"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToRight" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/landing/sideways/left"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../right")
+guard = SubResource("Resource_0wh4h")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="right" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/landing/sideways"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToLeft" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/landing/sideways/right"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../left")
+guard = SubResource("Resource_co3g1")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="stationary" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/landing"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("right")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="left" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/landing/stationary"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToRight" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/landing/stationary/left"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../right")
+guard = SubResource("Resource_0wh4h")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="right" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/landing/stationary"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToLeft" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/landing/stationary/right"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../left")
+guard = SubResource("Resource_co3g1")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToGround" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/landing"]
+script = ExtResource("5_x65pl")
+to = NodePath("../..")
+event = &"anim_finished"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
 [node name="airborne" type="Node" parent="AnimationStateChart/Root/movement_anims"]
 script = ExtResource("3_0wh4h")
-initial_state = NodePath("jumping")
+initial_state = NodePath(".")
 metadata/_custom_type_script = "uid://jk2jm1g6q853"
 
-[node name="jumping" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne"]
+[node name="jumping_upwards" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne"]
 script = ExtResource("3_0wh4h")
-initial_state = NodePath("jumping_upwards/charging")
+initial_state = NodePath("accelerating_upward")
 metadata/_custom_type_script = "uid://jk2jm1g6q853"
 
-[node name="jumping_upwards" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping"]
+[node name="jumping_midair" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_upwards"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="accelerating_upward" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_upwards"]
 script = ExtResource("3_0wh4h")
-initial_state = NodePath("jumping_midair")
+initial_state = NodePath("right")
 metadata/_custom_type_script = "uid://jk2jm1g6q853"
 
-[node name="charging" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping/jumping_upwards"]
+[node name="left" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_upwards/accelerating_upward"]
 script = ExtResource("4_er6sr")
 metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 
-[node name="accelerating_upward" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping/jumping_upwards"]
+[node name="ToRight" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_upwards/accelerating_upward/left"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../right")
+guard = SubResource("Resource_0wh4h")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="right" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_upwards/accelerating_upward"]
 script = ExtResource("4_er6sr")
 metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 
-[node name="jumping_midair" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping/jumping_upwards"]
+[node name="ToLeft" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_upwards/accelerating_upward/right"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../left")
+guard = SubResource("Resource_co3g1")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToFalling" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_upwards/accelerating_upward"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../falling")
+event = &"fall"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="falling" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_upwards"]
 script = ExtResource("4_er6sr")
 metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 
-[node name="jumping_sideways" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping"]
+[node name="ToLandingStationary" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_upwards/falling"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../../../on_ground/landing/stationary")
+event = &"touchdown"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="jumping_sideways" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne"]
 script = ExtResource("3_0wh4h")
-initial_state = NodePath("jumping_midair")
+initial_state = NodePath("accelerating_upward")
 metadata/_custom_type_script = "uid://jk2jm1g6q853"
 
-[node name="charging" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping/jumping_sideways"]
+[node name="accelerating_upward" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_sideways"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("right")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="ToFalling" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_sideways/accelerating_upward"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../falling")
+event = &"fall"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="left" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_sideways/accelerating_upward"]
 script = ExtResource("4_er6sr")
 metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 
-[node name="accelerating_upward" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping/jumping_sideways"]
+[node name="ToRight" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_sideways/accelerating_upward/left"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../right")
+guard = SubResource("Resource_0wh4h")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="right" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_sideways/accelerating_upward"]
 script = ExtResource("4_er6sr")
 metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 
-[node name="jumping_midair" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping/jumping_sideways"]
+[node name="ToLeft" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_sideways/accelerating_upward/right"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../left")
+guard = SubResource("Resource_co3g1")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="jumping_midair" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_sideways"]
 script = ExtResource("4_er6sr")
 metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 
-[node name="falling" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne"]
+[node name="falling" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_sideways"]
 script = ExtResource("4_er6sr")
 metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToLandingSideways" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping_sideways/falling"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../../../on_ground/landing/sideways")
+event = &"touchdown"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
 [node name="combat_anims" type="Node" parent="AnimationStateChart/Root"]
 script = ExtResource("3_0wh4h")
@@ -319,4 +447,18 @@ metadata/_custom_type_script = "uid://jk2jm1g6q853"
 [connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/running" to="." method="_on_running_state_entered"]
 [connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/running/left" to="." method="_on_left_state_entered"]
 [connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/running/right" to="." method="_on_right_state_entered"]
+[connection signal="event_received" from="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down" to="." method="_on_slowing_down_event_received"]
 [connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down" to="." method="_on_slowing_down_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/stationary/standing" to="." method="_on_standing_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/landing/sideways" to="." method="_on_landing_sideways_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/landing/sideways/left" to="." method="_on_left_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/landing/sideways/right" to="." method="_on_right_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/landing/stationary" to="." method="_on_landing_stationary_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/landing/stationary/left" to="." method="_on_left_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/landing/stationary/right" to="." method="_on_right_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/airborne/jumping_upwards/accelerating_upward" to="." method="_on_accelerating_upward_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/airborne/jumping_upwards/accelerating_upward/left" to="." method="_on_left_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/airborne/jumping_upwards/accelerating_upward/right" to="." method="_on_right_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/airborne/jumping_sideways/accelerating_upward" to="." method="_on_sideways_accelerating_upward_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/airborne/jumping_sideways/accelerating_upward/left" to="." method="_on_left_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/airborne/jumping_sideways/accelerating_upward/right" to="." method="_on_right_state_entered"]

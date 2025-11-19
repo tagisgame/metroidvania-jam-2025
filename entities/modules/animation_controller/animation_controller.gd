@@ -13,6 +13,7 @@ func _ready() -> void:
 	assert(target_sprite, "[AnimController] ERROR: No target sprite attached!")
 	
 	target_sprite.connect("frame_changed", func (): _update_frame())
+	target_sprite.connect("animation_finished", func(): _anim_finished())
 	
 func _process(_delta: float) -> void:
 	_change_anim_to_scheduled()
@@ -22,6 +23,9 @@ func set_dir(dir: int):
 
 func set_horizontal_movement(speed: int):
 	$AnimationStateChart.set_expression_property("speed", speed)
+	
+func jump():
+	$AnimationStateChart.send_event("jump")
 
 func _on_left_state_entered() -> void:
 	target_sprite.flip_h = true
@@ -45,6 +49,10 @@ func _on_moving_state_exited() -> void:
 
 func _update_frame() -> void:
 	_current_frame = target_sprite.frame
+	
+func _anim_finished() -> void:
+	print("Anim Finished")
+	$AnimationStateChart.send_event("anim_finished")
 
 func _change_anim_to_scheduled():
 	if (_scheduled_animation != ""):
@@ -75,3 +83,39 @@ func _schedule_animation_change(anim_name: StringName, frame_to_switch: int = -1
 
 func _on_slowing_down_state_entered() -> void:
 	_schedule_animation_change("slowing_down", 5, 0)
+
+
+func _on_movement_module_falling_started() -> void:
+	$AnimationStateChart.send_event("fall")
+
+
+func _on_movement_module_jump_started() -> void:
+	$AnimationStateChart.send_event("jump")
+
+
+func _on_movement_module_touchdown() -> void:
+	$AnimationStateChart.send_event("touchdown")
+
+
+func _on_accelerating_upward_state_entered() -> void:
+	_schedule_animation_change("jumping_upward")
+
+
+func _on_landing_stationary_state_entered() -> void:
+	_schedule_animation_change("landing_stationary")
+
+
+func _on_standing_state_entered() -> void:
+	_schedule_animation_change("idle")
+
+
+func _on_sideways_accelerating_upward_state_entered() -> void:
+	_schedule_animation_change("jumping")
+
+
+func _on_landing_sideways_state_entered() -> void:
+	_schedule_animation_change("landing_sideways")
+
+
+func _on_slowing_down_event_received(event: StringName) -> void:
+	print(event)
