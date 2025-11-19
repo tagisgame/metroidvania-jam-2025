@@ -16,9 +16,14 @@ extends Node
 @export var coyote_time_ms: int = MovementConsts.DEFAULT_COYOTE_TIME_MS
 @export var jump_buffer_time_ms: int = MovementConsts.DEFAULT_JUMPING_BUFFER_TIME_MS
 
+@export_category("Animation control")
+@export var animation_controller: AnimationController
+
 var _gravity_for_max_jump: float
 var _gravity_for_min_jump: float
 var _jump_initial_velocity: float
+
+var _previous_dir: int = 0
 
 #var _gravity_for_max_jump: float =	\
 	#(2.0 * max_jump_height_px * max_hor_velocity * max_hor_velocity) /	\
@@ -41,6 +46,19 @@ func _physics_process(_delta: float) -> void:
 		
 
 func apply_horizontal_acceleration(axis_vector_val: float, delta: float) -> void:
+	var dir: int = 1 if axis_vector_val > 0 else -1 if axis_vector_val < 0 else 0;
+	if (animation_controller):
+		if (parent_entity.velocity.x == 0):
+			animation_controller.set_horizontal_movement(0)
+		elif (absf(parent_entity.velocity.x) == max_hor_velocity):
+			animation_controller.set_horizontal_movement(2)
+		elif (absf(parent_entity.velocity.x) > 0):
+			animation_controller.set_horizontal_movement(1)
+			
+		if (dir && dir != _previous_dir):
+			animation_controller.set_dir(dir)
+	_previous_dir = dir
+	
 	var target_velocity: float = 0.0 if axis_vector_val == 0.0 else max_hor_velocity * axis_vector_val
 	var velocity_delta: float = hor_deceleration if axis_vector_val == 0.0 else hor_acceleration
 	
@@ -72,17 +90,12 @@ func _calc_jumping_curve() -> void:
 	var max_xh: float = max_jump_dist_px / 2.0
 	var min_xh: float = min_jump_dist_px / 2.0
 	
-	print("t: ", max_xh / vx)
-	
 	_jump_initial_velocity = (2 * max_h * vx) / max_xh
-	print (_jump_initial_velocity)
 	
 	var vx_sqrd: float = vx * vx
 	var max_xh_sqrd: float = max_xh * max_xh
 	var min_xh_sqrd: float = min_xh * min_xh
 	
 	_gravity_for_max_jump = (-2 * max_h * vx_sqrd) / max_xh_sqrd
-	print (_gravity_for_max_jump)
 
 	_gravity_for_min_jump = (-2 * min_h * vx_sqrd) / min_xh_sqrd
-	print (_gravity_for_min_jump)

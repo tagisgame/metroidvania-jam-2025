@@ -1,0 +1,322 @@
+[gd_scene load_steps=16 format=3 uid="uid://yt6h0ni2o8r5"]
+
+[ext_resource type="Script" uid="uid://bkfnrkulk5wgt" path="res://entities/modules/animation_controller/animation_controller.gd" id="1_ool0l"]
+[ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="2_n1lsr"]
+[ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="3_0wh4h"]
+[ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="4_er6sr"]
+[ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="5_x65pl"]
+[ext_resource type="Script" uid="uid://le5w1cm0ul8p" path="res://addons/godot_state_charts/expression_guard.gd" id="6_0wh4h"]
+
+[sub_resource type="Resource" id="Resource_0wh4h"]
+script = ExtResource("6_0wh4h")
+expression = "dir == 1"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[sub_resource type="Resource" id="Resource_co3g1"]
+script = ExtResource("6_0wh4h")
+expression = "dir == -1"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[sub_resource type="Resource" id="Resource_q504y"]
+script = ExtResource("6_0wh4h")
+expression = "speed == 2"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[sub_resource type="Resource" id="Resource_7pcwe"]
+script = ExtResource("6_0wh4h")
+expression = "speed < 1"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[sub_resource type="Resource" id="Resource_in7mg"]
+script = ExtResource("6_0wh4h")
+expression = "speed < 2"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[sub_resource type="Resource" id="Resource_b8r05"]
+script = ExtResource("6_0wh4h")
+expression = "speed == 1"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[sub_resource type="Resource" id="Resource_t7fbg"]
+script = ExtResource("6_0wh4h")
+expression = "speed == 2"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[sub_resource type="Resource" id="Resource_er6sr"]
+script = ExtResource("6_0wh4h")
+expression = "speed == 0"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[sub_resource type="Resource" id="Resource_x65pl"]
+script = ExtResource("6_0wh4h")
+expression = "speed != 0"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[node name="AnimationController" type="Node"]
+script = ExtResource("1_ool0l")
+
+[node name="AnimationStateChart" type="Node" parent="."]
+script = ExtResource("2_n1lsr")
+metadata/_custom_type_script = "uid://couw105c3bde4"
+
+[node name="Root" type="Node" parent="AnimationStateChart"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("movement_anims")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="movement_anims" type="Node" parent="AnimationStateChart/Root"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("on_ground")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="on_ground" type="Node" parent="AnimationStateChart/Root/movement_anims"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("stationary")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="moving" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("walking")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="walking" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("right")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="left" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/walking"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToRight" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/walking/left"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../right")
+guard = SubResource("Resource_0wh4h")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="right" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/walking"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToLeft" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/walking/right"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../left")
+guard = SubResource("Resource_co3g1")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToRunning" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/walking"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../running")
+guard = SubResource("Resource_q504y")
+delay_in_seconds = "0.4"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToSlowing" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/walking"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../slowing_down")
+guard = SubResource("Resource_7pcwe")
+delay_in_seconds = "0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="sneaking" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("right")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="left" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/sneaking"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToRight" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/sneaking/left"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../right")
+guard = SubResource("Resource_0wh4h")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="right" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/sneaking"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToLeft" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/sneaking/right"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../left")
+guard = SubResource("Resource_co3g1")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="running" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("right")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="left" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/running"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToRight" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/running/left"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../right")
+guard = SubResource("Resource_0wh4h")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="right" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/running"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToLeft" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/running/right"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../left")
+guard = SubResource("Resource_co3g1")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToSlowing" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/running"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../slowing_down")
+guard = SubResource("Resource_in7mg")
+delay_in_seconds = "0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="slowing_down" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("right")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="left" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToRight" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down/left"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../right")
+guard = SubResource("Resource_0wh4h")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="right" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToLeft" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down/right"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../left")
+guard = SubResource("Resource_co3g1")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToWalking" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../walking")
+guard = SubResource("Resource_b8r05")
+delay_in_seconds = "0.1"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToRunning" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../running")
+guard = SubResource("Resource_t7fbg")
+delay_in_seconds = "0.1"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToStationary" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../../stationary")
+guard = SubResource("Resource_er6sr")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="stationary" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("standing")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="standing" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/stationary"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="crouching" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/stationary"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToMoving" type="Node" parent="AnimationStateChart/Root/movement_anims/on_ground/stationary"]
+script = ExtResource("5_x65pl")
+to = NodePath("../../moving")
+guard = SubResource("Resource_x65pl")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="airborne" type="Node" parent="AnimationStateChart/Root/movement_anims"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("jumping")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="jumping" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("jumping_upwards/charging")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="jumping_upwards" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("jumping_midair")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="charging" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping/jumping_upwards"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="accelerating_upward" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping/jumping_upwards"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="jumping_midair" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping/jumping_upwards"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="jumping_sideways" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping"]
+script = ExtResource("3_0wh4h")
+initial_state = NodePath("jumping_midair")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="charging" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping/jumping_sideways"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="accelerating_upward" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping/jumping_sideways"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="jumping_midair" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne/jumping/jumping_sideways"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="falling" type="Node" parent="AnimationStateChart/Root/movement_anims/airborne"]
+script = ExtResource("4_er6sr")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="combat_anims" type="Node" parent="AnimationStateChart/Root"]
+script = ExtResource("3_0wh4h")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="status_anims" type="Node" parent="AnimationStateChart/Root"]
+script = ExtResource("3_0wh4h")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="idle_anims" type="Node" parent="AnimationStateChart/Root"]
+script = ExtResource("3_0wh4h")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[connection signal="child_state_entered" from="AnimationStateChart/Root" to="." method="_on_root_child_state_entered"]
+[connection signal="state_exited" from="AnimationStateChart/Root/movement_anims/on_ground/moving" to="." method="_on_moving_state_exited"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/walking" to="." method="_on_walking_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/walking/left" to="." method="_on_left_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/walking/right" to="." method="_on_right_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/sneaking/left" to="." method="_on_left_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/sneaking/right" to="." method="_on_right_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/running" to="." method="_on_running_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/running/left" to="." method="_on_left_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/running/right" to="." method="_on_right_state_entered"]
+[connection signal="state_entered" from="AnimationStateChart/Root/movement_anims/on_ground/moving/slowing_down" to="." method="_on_slowing_down_state_entered"]

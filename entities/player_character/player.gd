@@ -25,6 +25,16 @@ func _process(_delta:float) -> void:
 	if (stop_jump.is_triggered()):
 		$MovementModule.stop_jump()
 
-func _physics_process(delta: float) -> void:
+func _physics_process(delta: float) -> void:	
 	$MovementModule.apply_horizontal_acceleration(move.value_axis_2d.normalized().x, delta)
 	move_and_slide()
+
+func play_anim(name: String) -> void:
+	$AnimatedSprite2D.play(name)
+	
+func stop_anim(name: String) -> void:
+	if ($AnimatedSprite2D.animation == name):
+		$AnimatedSprite2D.stop()
+	
+func flip_horizontally(flip: bool) -> void:
+	$AnimatedSprite2D.flip_h = flip
