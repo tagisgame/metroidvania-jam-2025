@@ -6,7 +6,8 @@ extends Node
 @export var hor_acceleration: float = MovementConsts.DEFAULT_HORIZONTAL_ACCELERATION
 @export var max_hor_velocity: float = MovementConsts.DEFAULT_MAX_HORIZONTAL_VELOCITY
 @export var hor_deceleration: float = MovementConsts.DEFAULT_FRICTION_ACCELERATION
-@export var dash_speed_bonus: float = 250
+# @export var dash_speed_bonus: float = 250 
+@export var dash_target_velocity: float = 1200
 
 @export_category("Vertical movement")
 @export var max_jump_height_px: int = 104
@@ -20,8 +21,8 @@ extends Node
 var _gravity_for_max_jump: float
 var _gravity_for_min_jump: float
 var _jump_initial_velocity: float
-var _dash_boost: float = 5
-# var _is_dashing: bool = false
+# var _dash_boost: float = 5
+var _is_dashing: bool = false
 
 #var _gravity_for_max_jump: float =	\
 	#(2.0 * max_jump_height_px * max_hor_velocity * max_hor_velocity) /	\
@@ -44,8 +45,10 @@ func _physics_process(_delta: float) -> void:
 		
 
 func apply_horizontal_acceleration(axis_vector_val: float, delta: float) -> void:
+	if _is_dashing:
+		return
 	
-	var target_velocity: float = 0.0 if axis_vector_val == 0.0 else max_hor_velocity * axis_vector_val
+	var target_velocity: float = 0.0 if axis_vector_val == 0.0  else max_hor_velocity * axis_vector_val
 	var velocity_delta: float = hor_deceleration if axis_vector_val == 0.0 else hor_acceleration
 	
 	parent_entity.velocity.x = move_toward(parent_entity.velocity.x, target_velocity, velocity_delta * delta)
@@ -97,16 +100,16 @@ func _calc_jumping_curve() -> void:
 
 
 func _on_is_dashing_state_entered():
+	var axis_x = parent_entity.move.value_axis_2d.normalized().x
 	
-	print("daszz")
+	_is_dashing = true
+	
 	$DashTimer.start()
 	
-	parent_entity.velocity.y = 0
-	parent_entity.velocity.x = parent_entity.velocity.x * _dash_boost
+	parent_entity.velocity.x = axis_x * dash_target_velocity
 	
-
 func _on_dash_timer_timeout():
 	$DashTimer.stop()
 	parent_entity.velocity.x = 0
-
+	_is_dashing = false
 	
