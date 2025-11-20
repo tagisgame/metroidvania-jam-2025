@@ -1,5 +1,6 @@
 extends Node
 ## Handles movement, jumping and dash physics.
+## In the future it will handle double jump and wall jump.
 
 @export var parent_entity: CharacterBody2D = get_parent()
 
@@ -18,11 +19,18 @@ extends Node
 @export var coyote_time_ms: int = MovementConsts.DEFAULT_COYOTE_TIME_MS
 @export var jump_buffer_time_ms: int = MovementConsts.DEFAULT_JUMPING_BUFFER_TIME_MS
 
+@export_category("Dash movement")
+@export var dash_max: int = 2
+@export var current_dash_limit: int = 2
+@export var dash_restore_delay: int = 6
+
+@onready var dash_restore_timer: Timer = $DashResetTimer
 
 var _gravity_for_max_jump: float
 var _gravity_for_min_jump: float
 var _jump_initial_velocity: float
 var _is_dashing: bool = false
+
 
 #var _gravity_for_max_jump: float =	\
 	#(2.0 * max_jump_height_px * max_hor_velocity * max_hor_velocity) /	\
@@ -61,7 +69,9 @@ func stop_jump() -> void:
 	jump_state.send_event("stop_jump")
 	
 func start_dash() -> void:
-	jump_state.send_event("dash")
+	if current_dash_limit > 0:
+		current_dash_limit -= 1
+		jump_state.send_event("dash")
 
 func _on_is_jumping_state_physics_processing(delta: float) -> void:
 	parent_entity.velocity.y -= _gravity_for_max_jump * delta
@@ -108,4 +118,13 @@ func _on_is_dashing_state_entered():
 	
 func _on_is_dashing_state_exited():
 	_is_dashing = false
-	parent_entity.restore_dash()
+	
+	if $DashResetTimer.is_stopped() and current_dash_limit < dash_max:
+		dash_restore_timer.start(dash_restore_delay)
+		
+		
+func _on_dash_reset_timer_timeout():
+	current_dash_limit += 1
+	print("dash restored, now player has: ", current_dash_limit)
+	if current_dash_limit < dash_max:
+		dash_restore_timer.start(dash_restore_delay)
