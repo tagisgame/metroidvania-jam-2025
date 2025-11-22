@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3 uid="uid://b3lqgt7u4lvcp"]
+
+[ext_resource type="Script" uid="uid://c4j5jryw2ys7y" path="res://entities/player_character/player.gd" id="1_wuh0g"]
+[ext_resource type="Texture2D" uid="uid://bpf78jrcixrbm" path="res://entities/player_character/herochar_idle_anim_strip_4.png" id="2_psj07"]
+[ext_resource type="PackedScene" uid="uid://215re2lxj5ca" path="res://entities/modules/movement_module/movement_module.tscn" id="3_6en24"]
+[ext_resource type="PackedScene" uid="uid://3sbf7dnjchsw" path="res://entities/player_character/player_camera/player_camera.tscn" id="4_gj10d"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6en24"]
+radius = 22.0
+height = 92.0
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_wuh0g")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(24, -46)
+shape = SubResource("CapsuleShape2D_6en24")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(24, -48.28)
+scale = Vector2(2.9999998, 5.965)
+texture = ExtResource("2_psj07")
+hframes = 4
+
+[node name="MovementModule" parent="." node_paths=PackedStringArray("parent_entity") instance=ExtResource("3_6en24")]
+parent_entity = NodePath("..")
+
+[node name="PlayerCamera" parent="." node_paths=PackedStringArray("parent_entity") instance=ExtResource("4_gj10d")]
+parent_entity = NodePath("..")
+
+[node name="DashCooldownTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="DashCooldownTimer" to="." method="_on_dash_cooldown_timer_timeout"]

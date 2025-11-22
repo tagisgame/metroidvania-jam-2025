@@ -1,5 +1,10 @@
 extends CharacterBody2D
 
+
+const SPEED = 300.0
+const JUMP_VELOCITY = -400.0
+
+
 @export var move:GUIDEAction =\
 	 load("res://entities/player_character/mapping_context/move_action.tres")
 
@@ -8,12 +13,13 @@ extends CharacterBody2D
 	
 @export var stop_jump: GUIDEAction =\
 	load("res://entities/player_character/mapping_context/stop_jump.tres")
+	
+@export var start_dash: GUIDEAction =\
+	load("res://entities/player_character/mapping_context/start_dash.tres")
 
 @export var mapping_context:GUIDEMappingContext =\
 	 load("res://entities/player_character/mapping_context/mapping_context.tres")
 
-const SPEED = 300.0
-const JUMP_VELOCITY = -400.0
 
 func _ready():
 	GUIDE.enable_mapping_context(mapping_context)
@@ -38,3 +44,11 @@ func stop_anim(name: String) -> void:
 	
 func flip_horizontally(flip: bool) -> void:
 	$AnimatedSprite2D.flip_h = flip
+		
+	if (start_dash.is_triggered()):
+		$MovementModule.start_dash()
+	
+func _physics_process(delta: float) -> void:
+	$MovementModule.apply_horizontal_acceleration(move.value_axis_2d.normalized().x, delta)
+	move_and_slide()
+	

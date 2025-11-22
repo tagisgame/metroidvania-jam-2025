@@ -1,4 +1,6 @@
 extends Node
+## Handles movement, jumping and dash physics.
+## In the future it will handle double jump and wall jump.
 
 signal jump_started
 signal falling_started
@@ -9,7 +11,8 @@ signal touchdown
 @export_category("Horizontal movement")
 @export var hor_acceleration: float = MovementConsts.DEFAULT_HORIZONTAL_ACCELERATION
 @export var max_hor_velocity: float = MovementConsts.DEFAULT_MAX_HORIZONTAL_VELOCITY
-@export var hor_deceleration: float = MovementConsts.DEFAULT_FRICTION_ACCELERATION
+@export var hor_deceleration: float = MovementConsts.DEFAULT_FRICTION_ACCELERATION 
+@export var dash_target_velocity: float = 1200
 
 @export_category("Vertical movement")
 @export var max_jump_height_px: int = 104
@@ -23,9 +26,18 @@ signal touchdown
 @export_category("Animation control")
 @export var animation_controller: AnimationController
 
+@export_category("Dash movement")
+@export var dash_max: int = 2
+@export var current_dash_limit: int = 2
+@export var dash_restore_delay: int = 6
+
+@onready var dash_restore_timer: Timer = $DashResetTimer
+
 var _gravity_for_max_jump: float
 var _gravity_for_min_jump: float
 var _jump_initial_velocity: float
+var _is_dashing: bool = false
+
 
 var _previous_dir: int = 0
 
@@ -64,16 +76,26 @@ func apply_horizontal_acceleration(axis_vector_val: float, delta: float) -> void
 	_previous_dir = dir
 	
 	var target_velocity: float = 0.0 if axis_vector_val == 0.0 else max_hor_velocity * axis_vector_val
+	if _is_dashing:
+		return
+	
+	var target_velocity: float = 0.0 if axis_vector_val == 0.0  else max_hor_velocity * axis_vector_val
 	var velocity_delta: float = hor_deceleration if axis_vector_val == 0.0 else hor_acceleration
 	
 	parent_entity.velocity.x = move_toward(parent_entity.velocity.x, target_velocity, velocity_delta * delta)
-
+	
+	
 func start_jump() -> void:
 	jump_started.emit()
 	jump_state.send_event("jump")
 
 func stop_jump() -> void:
 	jump_state.send_event("stop_jump")
+	
+func start_dash() -> void:
+	if current_dash_limit > 0:
+		current_dash_limit -= 1
+		jump_state.send_event("dash")
 
 func _on_is_jumping_state_physics_processing(delta: float) -> void:
 	parent_entity.velocity.y -= _gravity_for_max_jump * delta
@@ -112,3 +134,25 @@ func _on_is_in_air_state_entered() -> void:
 
 func _on_is_on_ground_state_entered() -> void:
 	touchdown.emit()
+	print (_gravity_for_min_jump)
+
+
+func _on_is_dashing_state_entered():
+	_is_dashing = true
+	var axis_x: float = parent_entity.move.value_axis_2d.normalized().x
+	
+	parent_entity.velocity.x = axis_x * dash_target_velocity
+	
+	
+func _on_is_dashing_state_exited():
+	_is_dashing = false
+	
+	if $DashResetTimer.is_stopped() and current_dash_limit < dash_max:
+		dash_restore_timer.start(dash_restore_delay)
+		
+		
+func _on_dash_reset_timer_timeout():
+	current_dash_limit += 1
+	print("dash restored, now player has: ", current_dash_limit)
+	if current_dash_limit < dash_max:
+		dash_restore_timer.start(dash_restore_delay)
