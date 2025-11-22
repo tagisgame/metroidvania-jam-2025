@@ -82,11 +82,19 @@ metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 script = ExtResource("4_m33x5")
 metadata/_custom_type_script = "uid://cytafq8i1y8qm"
 
+[node name="ToJump" type="Node" parent="StateChart/Root/is_airborne/moves_upwards"]
+script = ExtResource("5_wk8nw")
+to = NodePath("..")
+event = &"jump"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
 [node name="ToFall" type="Node" parent="StateChart/Root/is_airborne/moves_upwards"]
 script = ExtResource("5_wk8nw")
 to = NodePath("../../is_in_air")
 event = &"stop_jump"
-delay_in_seconds = "0.0"
+delay_in_seconds = "0.2
+"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
 [node name="is_in_air" type="Node" parent="StateChart/Root/is_airborne"]
@@ -100,9 +108,9 @@ event = &"touchdown"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
-[node name="ToBufferJump" type="Node" parent="StateChart/Root/is_airborne/is_in_air"]
+[node name="ToJump" type="Node" parent="StateChart/Root/is_airborne/is_in_air"]
 script = ExtResource("5_wk8nw")
-to = NodePath("../../is_falling_buffered")
+to = NodePath("../../moves_upwards")
 event = &"jump"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
@@ -141,10 +149,10 @@ to = NodePath("../../is_in_air")
 delay_in_seconds = "0.2"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
-[connection signal="state_entered" from="StateChart/Root/is_on_ground" to="." method="_on_is_on_ground_state_entered"]
 [node name="DashResetTimer" type="Timer" parent="."]
 one_shot = true
 
+[connection signal="state_entered" from="StateChart/Root/is_on_ground" to="." method="_on_is_on_ground_state_entered"]
 [connection signal="state_entered" from="StateChart/Root/is_dashing" to="." method="_on_is_dashing_state_entered"]
 [connection signal="state_exited" from="StateChart/Root/is_dashing" to="." method="_on_is_dashing_state_exited"]
 [connection signal="state_entered" from="StateChart/Root/is_airborne/moves_upwards" to="." method="_on_is_jumping_state_entered"]

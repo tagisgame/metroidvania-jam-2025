@@ -1,5 +1,6 @@
 extends CharacterBody2D
-
+## Main player controller. Connects input actions from GUIDE to the
+## MovementModule and AnimationController.
 
 const SPEED = 300.0
 const JUMP_VELOCITY = -400.0
@@ -30,6 +31,9 @@ func _process(_delta:float) -> void:
 	
 	if (stop_jump.is_triggered()):
 		$MovementModule.stop_jump()
+		
+	if (start_dash.is_triggered()):
+		$MovementModule.start_dash()
 
 func _physics_process(delta: float) -> void:	
 	$MovementModule.apply_horizontal_acceleration(move.value_axis_2d.normalized().x, delta)
@@ -45,10 +49,3 @@ func stop_anim(name: String) -> void:
 func flip_horizontally(flip: bool) -> void:
 	$AnimatedSprite2D.flip_h = flip
 		
-	if (start_dash.is_triggered()):
-		$MovementModule.start_dash()
-	
-func _physics_process(delta: float) -> void:
-	$MovementModule.apply_horizontal_acceleration(move.value_axis_2d.normalized().x, delta)
-	move_and_slide()
-	

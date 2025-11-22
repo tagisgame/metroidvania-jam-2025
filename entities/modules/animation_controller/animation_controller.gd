@@ -1,5 +1,6 @@
 class_name AnimationController
 extends Node
+## Handles the character animations.
 
 @export var target_sprite: AnimatedSprite2D
 
