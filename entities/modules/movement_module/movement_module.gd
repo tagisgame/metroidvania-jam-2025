@@ -36,9 +36,10 @@ signal dash_started
 var _gravity_for_max_jump: float
 var _gravity_for_min_jump: float
 var _jump_initial_velocity: float
-var _is_dashing: bool = false
 var _jumps_left: int = 2
 var _previous_dir: int = 0
+var entity_facing_dir: int = 1 # 1 = right, -1 = left
+#var _is_dashing: bool = false
 
 @onready var dash_restore_timer: Timer = $DashResetTimer
 @onready var jump_state: StateChart = $StateChart
@@ -79,8 +80,9 @@ func apply_horizontal_acceleration(axis_vector_val: float, delta: float) -> void
 	_previous_dir = dir
 	
 	var target_velocity: float = 0.0 if axis_vector_val == 0.0 else max_hor_velocity * axis_vector_val
-	if _is_dashing:
-		return
+	
+	if dir != 0:
+		entity_facing_dir = dir
 	
 	target_velocity = 0.0 if axis_vector_val == 0.0  else max_hor_velocity * axis_vector_val
 	var velocity_delta: float = hor_deceleration if axis_vector_val == 0.0 else hor_acceleration
@@ -149,14 +151,14 @@ func _on_is_on_ground_state_entered() -> void:
 
 
 func _on_is_dashing_state_entered():
-	_is_dashing = true
-	var axis_x: float = parent_entity.move.value_axis_2d.normalized().x
+	#_is_dashing = true
 	
-	parent_entity.velocity.x = axis_x * dash_target_velocity
+	parent_entity.velocity.y = 0
+	parent_entity.velocity.x = entity_facing_dir * dash_target_velocity
 	
 	
 func _on_is_dashing_state_exited():
-	_is_dashing = false
+	#_is_dashing = false
 	
 	if $DashResetTimer.is_stopped() and current_dash_limit < dash_max:
 		dash_restore_timer.start(dash_restore_delay)
