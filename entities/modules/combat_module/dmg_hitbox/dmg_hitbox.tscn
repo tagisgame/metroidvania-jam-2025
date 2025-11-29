@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ccra0ftfr67uv"]
+
+[ext_resource type="Script" uid="uid://gpy4wo5ewhrq" path="res://entities/modules/combat_module/dmg_hitbox/dmg_hitbox.gd" id="1_dg4se"]
+
+[node name="DmgHitbox" type="Area2D"]
+script = ExtResource("1_dg4se")

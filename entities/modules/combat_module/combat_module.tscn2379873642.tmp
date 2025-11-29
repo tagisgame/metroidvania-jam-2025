@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2qnd7g1hbj36"]
+
+[ext_resource type="Script" uid="uid://6vb8gowvat7t" path="res://entities/modules/combat_module/combat_module.gd" id="1_rrtfj"]
+[ext_resource type="PackedScene" uid="uid://b3b8ff1e4rmqc" path="res://entities/modules/combat_module/health_component/cm_health_component.tscn" id="2_hafeo"]
+
+[node name="CombatModule" type="Area2D"]
+script = ExtResource("1_rrtfj")
+
+[node name="CmHealthComponent" parent="." instance=ExtResource("2_hafeo")]

@@ -1,0 +1,135 @@
+[gd_scene load_steps=15 format=3 uid="uid://d2qnd7g1hbj36"]
+
+[ext_resource type="Script" uid="uid://6vb8gowvat7t" path="res://entities/modules/combat_module/combat_module.gd" id="1_rrtfj"]
+[ext_resource type="PackedScene" uid="uid://b3b8ff1e4rmqc" path="res://entities/modules/combat_module/health_component/cm_health_component.tscn" id="2_hafeo"]
+[ext_resource type="Animation" uid="uid://dy4pg0ctulomi" path="res://entities/player_character/attacks/melee_punch/melee_punch_hitbox_anim.tres" id="3_7gavw"]
+[ext_resource type="Script" uid="uid://gpy4wo5ewhrq" path="res://entities/modules/combat_module/dmg_hitbox/dmg_hitbox.gd" id="3_lb4nt"]
+[ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="4_p35fy"]
+[ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="5_7gavw"]
+[ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="6_f731w"]
+[ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="7_es72y"]
+[ext_resource type="Script" uid="uid://le5w1cm0ul8p" path="res://addons/godot_state_charts/expression_guard.gd" id="8_ms5el"]
+
+[sub_resource type="Animation" id="Animation_b0bvp"]
+length = 0.001
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dwmgb"]
+_data = {
+&"RESET": SubResource("Animation_b0bvp"),
+&"melee_punch_anim": ExtResource("3_7gavw")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tbbp8"]
+
+[sub_resource type="Resource" id="Resource_0kvdf"]
+script = ExtResource("8_ms5el")
+expression = "attack_requested == false"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[sub_resource type="Resource" id="Resource_oci4v"]
+script = ExtResource("8_ms5el")
+expression = "attack_requested == true"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[node name="CombatModule" type="Node2D"]
+script = ExtResource("1_rrtfj")
+starting_health_points = 0
+hitbox_size = null
+
+[node name="CmHealthComponent" parent="." instance=ExtResource("2_hafeo")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_dwmgb")
+}
+
+[node name="DamageHitbox" type="Area2D" parent="."]
+script = ExtResource("3_lb4nt")
+metadata/_custom_type_script = "uid://gpy4wo5ewhrq"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageHitbox"]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_tbbp8")
+debug_color = Color(0.8061628, 0, 0.09483064, 0.41960785)
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("4_p35fy")
+metadata/_custom_type_script = "uid://couw105c3bde4"
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("5_7gavw")
+initial_state = NodePath("ready")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="ready" type="Node" parent="StateChart/Root"]
+script = ExtResource("6_f731w")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToStarting" type="Node" parent="StateChart/Root/ready"]
+script = ExtResource("7_es72y")
+to = NodePath("../../starting")
+event = &"start_attack"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="starting" type="Node" parent="StateChart/Root"]
+script = ExtResource("6_f731w")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToActive" type="Node" parent="StateChart/Root/starting"]
+script = ExtResource("7_es72y")
+to = NodePath("../../active")
+event = &"attack_started"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="active" type="Node" parent="StateChart/Root"]
+script = ExtResource("6_f731w")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToFinishing" type="Node" parent="StateChart/Root/active"]
+script = ExtResource("7_es72y")
+to = NodePath("../../finishing")
+event = &"finish_attack"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="finishing" type="Node" parent="StateChart/Root"]
+script = ExtResource("6_f731w")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToCooldown" type="Node" parent="StateChart/Root/finishing"]
+script = ExtResource("7_es72y")
+to = NodePath("../../on_cooldown")
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="on_cooldown" type="Node" parent="StateChart/Root"]
+script = ExtResource("6_f731w")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToBuffer" type="Node" parent="StateChart/Root/on_cooldown"]
+script = ExtResource("7_es72y")
+to = NodePath("../../on_cooldown_buffer")
+delay_in_seconds = "0.2"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="on_cooldown_buffer" type="Node" parent="StateChart/Root"]
+script = ExtResource("6_f731w")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="ToReady" type="Node" parent="StateChart/Root/on_cooldown_buffer"]
+script = ExtResource("7_es72y")
+to = NodePath("../../ready")
+guard = SubResource("Resource_0kvdf")
+delay_in_seconds = "0.1"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="ToStarting" type="Node" parent="StateChart/Root/on_cooldown_buffer"]
+script = ExtResource("7_es72y")
+to = NodePath("../../starting")
+guard = SubResource("Resource_oci4v")
+delay_in_seconds = "0.1"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[connection signal="state_entered" from="StateChart/Root/starting" to="." method="_start_attack"]

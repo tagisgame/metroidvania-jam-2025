@@ -1,4 +1,4 @@
-[gd_scene load_steps=80 format=3 uid="uid://b3lqgt7u4lvcp"]
+[gd_scene load_steps=72 format=3 uid="uid://b3lqgt7u4lvcp"]
 
 [ext_resource type="Script" uid="uid://c4j5jryw2ys7y" path="res://entities/player_character/player.gd" id="1_wuh0g"]
 [ext_resource type="Texture2D" uid="uid://dv6puv8wb0xo6" path="res://entities/player_character/assets/Walking.png" id="2_gj10d"]
@@ -11,11 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://3sbf7dnjchsw" path="res://entities/player_character/player_camera/player_camera.tscn" id="4_gj10d"]
 [ext_resource type="Texture2D" uid="uid://j3ysdx8m4yb" path="res://entities/player_character/assets/Landing.png" id="4_xhkxb"]
 [ext_resource type="Texture2D" uid="uid://cue388t1fnluc" path="res://entities/player_character/assets/Roll.png" id="5_jo50y"]
-[ext_resource type="Texture2D" uid="uid://q645blvu0q6u" path="res://entities/player_character/assets/Punch_1.png" id="7_ygqq1"]
 [ext_resource type="PackedScene" uid="uid://d2qnd7g1hbj36" path="res://entities/modules/combat_module/combat_module.tscn" id="12_jo50y"]
 [ext_resource type="Script" uid="uid://cpu8jutorxqd8" path="res://entities/player_character/dmg_debug.gd" id="13_4eiiq"]
-[ext_resource type="Script" uid="uid://dxg0jv26eai4y" path="res://entities/modules/combat_module/attack_move/attack_move.gd" id="13_a01rk"]
-[ext_resource type="Resource" uid="uid://bcv3xil7lyncn" path="res://entities/player_character/attacks/melee_punch/melee_punch.tres" id="14_ygqq1"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6en24"]
 radius = 22.0
@@ -124,26 +121,6 @@ region = Rect2(512, 0, 128, 128)
 [sub_resource type="AtlasTexture" id="AtlasTexture_rxy7t"]
 atlas = ExtResource("4_xhkxb")
 region = Rect2(640, 0, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ywacn"]
-atlas = ExtResource("7_ygqq1")
-region = Rect2(0, 0, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_qiw3d"]
-atlas = ExtResource("7_ygqq1")
-region = Rect2(128, 0, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xtaho"]
-atlas = ExtResource("7_ygqq1")
-region = Rect2(256, 0, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_x22ht"]
-atlas = ExtResource("7_ygqq1")
-region = Rect2(384, 0, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_r3bu8"]
-atlas = ExtResource("7_ygqq1")
-region = Rect2(512, 0, 128, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_06utx"]
 atlas = ExtResource("2_llcbm")
@@ -368,26 +345,6 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ywacn")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_qiw3d")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_xtaho")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_x22ht")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_r3bu8")
-}],
-"loop": false,
-"name": &"melee_punch",
-"speed": 20.0
-}, {
-"frames": [{
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_06utx")
 }, {
 "duration": 1.0,
@@ -503,26 +460,11 @@ shape = SubResource("CapsuleShape2D_6en24")
 position = Vector2(27, -90)
 scale = Vector2(1, 1.412)
 sprite_frames = SubResource("SpriteFrames_1s1g1")
-animation = &"melee_punch"
+animation = &"slowing_down"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
 position = Vector2(0, -64)
-
-[node name="CombatModule" parent="." node_paths=PackedStringArray("_animation_controller", "_movement_module") instance=ExtResource("12_jo50y")]
-attack_moves = Array[ExtResource("13_a01rk")]([ExtResource("14_ygqq1")])
-max_health_points = 10
-starting_health_points = 10
-_animation_controller = NodePath("../AnimationController")
-_movement_module = NodePath("../MovementModule")
-hitbox_position = Vector2(24.045, -62.1)
-
-[node name="Hitbox" type="Area2D" parent="CombatModule"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CombatModule/Hitbox"]
-position = Vector2(24, -50)
-shape = SubResource("CapsuleShape2D_4eiiq")
-debug_color = Color(0.38087067, 0.6134989, 0, 0.41960785)
 
 [node name="AnimationController" parent="." node_paths=PackedStringArray("target_sprite") instance=ExtResource("4_2m7is")]
 target_sprite = NodePath("../AnimatedSprite2D")
@@ -533,6 +475,18 @@ animation_controller = NodePath("../AnimationController")
 
 [node name="PlayerCamera" parent="." node_paths=PackedStringArray("parent_entity") instance=ExtResource("4_gj10d")]
 parent_entity = NodePath("..")
+
+[node name="CombatModule" parent="." node_paths=PackedStringArray("hitboxes") instance=ExtResource("12_jo50y")]
+hitboxes = {
+&"main": NodePath("Hitbox")
+}
+
+[node name="Hitbox" type="Area2D" parent="CombatModule"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CombatModule/Hitbox"]
+position = Vector2(24, -50)
+shape = SubResource("CapsuleShape2D_4eiiq")
+debug_color = Color(0.38087067, 0.6134989, 0, 0.41960785)
 
 [node name="DMG debug" type="Control" parent="."]
 layout_mode = 3

@@ -1,0 +1,2 @@
+class_name AttackDictionary
+extends Object

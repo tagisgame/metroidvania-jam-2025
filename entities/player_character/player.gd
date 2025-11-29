@@ -8,6 +8,9 @@ extends CharacterBody2D
 	
 @export var stop_jump: GUIDEAction =\
 	load("res://entities/player_character/mapping_context/stop_jump.tres")
+	
+@export var attack: GUIDEAction =\
+	load("res://entities/player_character/mapping_context/attack.tres")
 
 @export var mapping_context:GUIDEMappingContext =\
 	 load("res://entities/player_character/mapping_context/mapping_context.tres")
@@ -24,6 +27,9 @@ func _process(_delta:float) -> void:
 	
 	if (stop_jump.is_triggered()):
 		$MovementModule.stop_jump()
+		
+	if (attack.is_triggered()):
+		$CombatModule.request_attack(AttackMove.AttackTypes.MELEE, Vector2i.ZERO)
 
 func _physics_process(delta: float) -> void:	
 	$MovementModule.apply_horizontal_acceleration(move.value_axis_2d.normalized().x, delta)

@@ -1,6 +1,9 @@
 class_name AnimationController
 extends Node
 
+signal animation_switched(name: StringName)
+signal animation_finished()
+
 @export var target_sprite: AnimatedSprite2D
 
 var _current_frame: int = 0
@@ -27,6 +30,9 @@ func set_horizontal_movement(speed: int):
 func jump():
 	$AnimationStateChart.send_event("jump")
 
+func request_attack_animation(attack: AttackMove):
+	_schedule_animation_change(attack.sprite_animation_name)
+
 func _on_left_state_entered() -> void:
 	target_sprite.flip_h = true
 
@@ -51,7 +57,7 @@ func _update_frame() -> void:
 	_current_frame = target_sprite.frame
 	
 func _anim_finished() -> void:
-	print("Anim Finished")
+	animation_finished.emit()
 	$AnimationStateChart.send_event("anim_finished")
 
 func _change_anim_to_scheduled():
@@ -68,6 +74,7 @@ func _change_anim_to_scheduled():
 				debug_msg += "to current frame (%s)." % _current_frame
 				target_sprite.set_frame_and_progress(_current_frame, 0)
 			
+			animation_switched.emit(_scheduled_animation)
 			print_debug(debug_msg)
 			_scheduled_animation = ""
 

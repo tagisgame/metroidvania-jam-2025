@@ -1,3 +1,4 @@
+class_name MovementModule
 extends Node
 
 signal jump_started

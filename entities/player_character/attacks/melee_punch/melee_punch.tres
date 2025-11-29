@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="AttackMove" load_steps=3 format=3 uid="uid://bcv3xil7lyncn"]
+
+[ext_resource type="Script" uid="uid://dxg0jv26eai4y" path="res://entities/modules/combat_module/attack_move/attack_move.gd" id="1_2p3hb"]
+[ext_resource type="Animation" uid="uid://dy4pg0ctulomi" path="res://entities/player_character/attacks/melee_punch/melee_punch_hitbox_anim.tres" id="1_tmr3d"]
+
+[resource]
+script = ExtResource("1_2p3hb")
+attack_name = &"MeleePunch"
+hitbox_animation = ExtResource("1_tmr3d")
+sprite_animation_name = &"melee_punch"
+metadata/_custom_type_script = "uid://dxg0jv26eai4y"
